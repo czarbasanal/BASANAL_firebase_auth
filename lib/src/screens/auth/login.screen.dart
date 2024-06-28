@@ -85,9 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           errorText: 'Please fill out the username'),
                       MaxLengthValidator(32,
                           errorText: "Username cannot exceed 32 characters"),
-                      PatternValidator(r'^[a-zA-Z0-9 ]+$',
-                          errorText:
-                              'Username cannot contain special characters'),
+                      EmailValidator(errorText: "Please select a valid email"),
                     ]).call,
                   ),
                 ),
@@ -145,7 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
               .then((_) {
             context.go(HomeScreen.route);
           }).catchError((error) {
-            // Handle the error, e.g., show a dialog
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Login failed: ${error.toString()}")),
             );

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:state_change_demo/src/controllers/auth_controller.dart';
 import 'package:state_change_demo/src/dialogs/waiting_dialog.dart';
+import 'package:state_change_demo/src/screens/auth/login.screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String route = "/register";
@@ -170,7 +172,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (formKey.currentState?.validate() ?? false) {
       WaitingDialog.show(context,
           future: AuthController.I
-              .register(email.text.trim(), password.text.trim()));
+              .register(email.text.trim(), password.text.trim())
+              .then((_) {
+            context.go(LoginScreen.route);
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text("Registration failed: ${error.toString()}")),
+            );
+          }));
     }
   }
 

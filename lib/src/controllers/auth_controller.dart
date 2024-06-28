@@ -43,7 +43,7 @@ class AuthController with ChangeNotifier {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      state = AuthState.authenticated;
+      state = AuthState.unauthenticated;
       notifyListeners();
     } catch (e) {
       throw Exception("Registration failed: ${e.toString()}");

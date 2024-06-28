@@ -38,17 +38,21 @@ class GlobalRouter {
   FutureOr<String?> handleRedirect(
       BuildContext context, GoRouterState state) async {
     if (AuthController.I.state == AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route ||
-          state.matchedLocation == RegisterScreen.route) {
+      if (state.matchedLocation == LoginScreen.route) {
         return HomeScreen.route;
       }
+
       return null;
     }
     if (AuthController.I.state != AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route ||
-          state.matchedLocation == RegisterScreen.route) {
+      if (state.matchedLocation == LoginScreen.route) {
         return null;
       }
+
+      if (state.matchedLocation == RegisterScreen.route) {
+        return LoginScreen.route;
+      }
+
       return SplashScreen.route;
     }
     return null;
