@@ -1,0 +1,1 @@
+ /Users/czar/Mobile_SPElec3b/firebase_auth/.dart_tool/flutter_build/4eb42bcb0a3fd16c7c843c3a232c05b3/native_assets.yaml: 
