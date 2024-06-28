@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:state_change_demo/src/controllers/auth_controller.dart';
 import 'package:state_change_demo/src/dialogs/waiting_dialog.dart';
+import 'package:state_change_demo/src/screens/home/home.screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String route = "/auth";
+  static const String route = "/login";
   static const String name = "Login Screen";
   const LoginScreen({super.key});
 
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: const Text("Login"),
       ),
       bottomNavigationBar: SafeArea(
@@ -112,8 +114,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: password,
                     onEditingComplete: () {
                       passwordFn.unfocus();
-
-                      ///call submit maybe?
                     },
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Password is required"),
@@ -141,7 +141,15 @@ class _LoginScreenState extends State<LoginScreen> {
     if (formKey.currentState?.validate() ?? false) {
       WaitingDialog.show(context,
           future: AuthController.I
-              .login(username.text.trim(), password.text.trim()));
+              .login(username.text.trim(), password.text.trim())
+              .then((_) {
+            context.go(HomeScreen.route);
+          }).catchError((error) {
+            // Handle the error, e.g., show a dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Login failed: ${error.toString()}")),
+            );
+          }));
     }
   }
 
@@ -151,7 +159,6 @@ class _LoginScreenState extends State<LoginScreen> {
   );
 
   InputDecoration get decoration => InputDecoration(
-      // prefixIconColor: AppColors.primary.shade700,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       filled: true,
       fillColor: Colors.white,
@@ -165,17 +172,5 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       errorBorder: _baseBorder.copyWith(
         borderSide: const BorderSide(color: Colors.deepOrangeAccent, width: 1),
-      )
-      // errorStyle:
-      // AppTypography.body.b5.copyWith(color: AppColors.highlight.shade900),
-      // focusedErrorBorder: _baseBorder.copyWith(
-      // borderSide: BorderSide(color: AppColors.highlight.shade900, width: 1),
-      // ),
-      // labelStyle: AppTypography.subheading.s1
-      //     .copyWith(color: AppColors.secondary.shade2),
-      // floatingLabelStyle: AppTypography.heading.h5
-      //     .copyWith(color: AppColors.primary.shade400, fontSize: 18),
-      // hintStyle: AppTypography.subheading.s1
-      //     .copyWith(color: AppColors.secondary.shade2),
-      );
+      ));
 }

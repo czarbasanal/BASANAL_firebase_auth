@@ -6,6 +6,8 @@ import "package:go_router/go_router.dart";
 import "package:state_change_demo/src/controllers/auth_controller.dart";
 import "package:state_change_demo/src/enum/enum.dart";
 import "package:state_change_demo/src/screens/auth/login.screen.dart";
+import "package:state_change_demo/src/screens/auth/register.screen.dart";
+import "package:state_change_demo/src/screens/auth/splash.screen.dart";
 import "package:state_change_demo/src/screens/home/home.screen.dart";
 import "package:state_change_demo/src/screens/home/wrapper.dart";
 import "package:state_change_demo/src/screens/index.screen.dart";
@@ -36,16 +38,18 @@ class GlobalRouter {
   FutureOr<String?> handleRedirect(
       BuildContext context, GoRouterState state) async {
     if (AuthController.I.state == AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route) {
+      if (state.matchedLocation == LoginScreen.route ||
+          state.matchedLocation == RegisterScreen.route) {
         return HomeScreen.route;
       }
       return null;
     }
     if (AuthController.I.state != AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route) {
+      if (state.matchedLocation == LoginScreen.route ||
+          state.matchedLocation == RegisterScreen.route) {
         return null;
       }
-      return LoginScreen.route;
+      return SplashScreen.route;
     }
     return null;
   }
@@ -55,16 +59,30 @@ class GlobalRouter {
     _shellNavigatorKey = GlobalKey<NavigatorState>();
     router = GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: HomeScreen.route,
+        initialLocation: SplashScreen.route,
         redirect: handleRedirect,
         refreshListenable: AuthController.I,
         routes: [
+          GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              path: SplashScreen.route,
+              name: SplashScreen.name,
+              builder: (context, _) {
+                return const SplashScreen();
+              }),
           GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               path: LoginScreen.route,
               name: LoginScreen.name,
               builder: (context, _) {
                 return const LoginScreen();
+              }),
+          GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              path: RegisterScreen.route,
+              name: RegisterScreen.name,
+              builder: (context, _) {
+                return const RegisterScreen();
               }),
           ShellRoute(
               navigatorKey: _shellNavigatorKey,
@@ -92,8 +110,6 @@ class GlobalRouter {
           GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               path: IndexScreen.route,
-
-              /// /
               name: IndexScreen.name,
               builder: (context, _) {
                 return const IndexScreen();
@@ -102,8 +118,6 @@ class GlobalRouter {
                 GoRoute(
                     parentNavigatorKey: _rootNavigatorKey,
                     path: SimpleCounterScreen.route,
-
-                    /// / + simple-counter
                     name: SimpleCounterScreen.name,
                     builder: (context, _) {
                       return const SimpleCounterScreen();
