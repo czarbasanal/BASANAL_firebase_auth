@@ -37,24 +37,22 @@ class GlobalRouter {
 
   FutureOr<String?> handleRedirect(
       BuildContext context, GoRouterState state) async {
-    if (AuthController.I.state == AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route) {
-        return HomeScreen.route;
-      }
+    final authController = AuthController.I;
+    final authState = authController.state;
 
-      return null;
-    }
-    if (AuthController.I.state != AuthState.authenticated) {
-      if (state.matchedLocation == LoginScreen.route) {
-        return null;
-      }
+    final loggingIn = state.matchedLocation == LoginScreen.route;
+    final registering = state.matchedLocation == RegisterScreen.route;
 
-      if (state.matchedLocation == RegisterScreen.route) {
-        return LoginScreen.route;
-      }
-
+    if (authState == AuthState.unauthenticated) {
+      if (loggingIn || registering) return null;
       return SplashScreen.route;
     }
+
+    if (authState == AuthState.authenticated) {
+      if (loggingIn || registering) return HomeScreen.route;
+      return null;
+    }
+
     return null;
   }
 
@@ -62,108 +60,55 @@ class GlobalRouter {
     _rootNavigatorKey = GlobalKey<NavigatorState>();
     _shellNavigatorKey = GlobalKey<NavigatorState>();
     router = GoRouter(
-        navigatorKey: _rootNavigatorKey,
-        initialLocation: SplashScreen.route,
-        redirect: handleRedirect,
-        refreshListenable: AuthController.I,
-        routes: [
-          GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              path: SplashScreen.route,
-              name: SplashScreen.name,
+      navigatorKey: _rootNavigatorKey,
+      initialLocation: SplashScreen.route,
+      redirect: handleRedirect,
+      refreshListenable: AuthController.I,
+      routes: [
+        GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          path: SplashScreen.route,
+          name: SplashScreen.name,
+          builder: (context, _) {
+            return const SplashScreen();
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          path: LoginScreen.route,
+          name: LoginScreen.name,
+          builder: (context, _) {
+            return const LoginScreen();
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
+          path: RegisterScreen.route,
+          name: RegisterScreen.name,
+          builder: (context, _) {
+            return const RegisterScreen();
+          },
+        ),
+        ShellRoute(
+          navigatorKey: _shellNavigatorKey,
+          routes: [
+            GoRoute(
+              parentNavigatorKey: _shellNavigatorKey,
+              path: HomeScreen.route,
+              name: HomeScreen.name,
               builder: (context, _) {
-                return const SplashScreen();
-              }),
-          GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              path: LoginScreen.route,
-              name: LoginScreen.name,
-              builder: (context, _) {
-                return const LoginScreen();
-              }),
-          GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              path: RegisterScreen.route,
-              name: RegisterScreen.name,
-              builder: (context, _) {
-                return const RegisterScreen();
-              }),
-          ShellRoute(
-              navigatorKey: _shellNavigatorKey,
-              routes: [
-                GoRoute(
-                    parentNavigatorKey: _shellNavigatorKey,
-                    path: HomeScreen.route,
-                    name: HomeScreen.name,
-                    builder: (context, _) {
-                      return const HomeScreen();
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _shellNavigatorKey,
-                    path: "/index",
-                    name: "Wrapped Index",
-                    builder: (context, _) {
-                      return const IndexScreen();
-                    }),
-              ],
-              builder: (context, state, child) {
-                return HomeWrapper(
-                  child: child,
-                );
-              }),
-          GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              path: IndexScreen.route,
-              name: IndexScreen.name,
-              builder: (context, _) {
-                return const IndexScreen();
+                return const HomeScreen();
               },
-              routes: [
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: SimpleCounterScreen.route,
-                    name: SimpleCounterScreen.name,
-                    builder: (context, _) {
-                      return const SimpleCounterScreen();
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: SimpleCounterScreenWithInitialValue.route,
-                    name: SimpleCounterScreenWithInitialValue.name,
-                    builder: (context, _) {
-                      return const SimpleCounterScreenWithInitialValue(
-                          initialValue: 10);
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: StatefulParent.route,
-                    name: StatefulParent.name,
-                    builder: (context, _) {
-                      return const StatefulParent();
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: StatefulParentAndChild.route,
-                    name: StatefulParentAndChild.name,
-                    builder: (context, _) {
-                      return const StatefulParentAndChild();
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: KeyExample.route,
-                    name: KeyExample.name,
-                    builder: (context, _) {
-                      return const KeyExample();
-                    }),
-                GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: NoKeyExample.route,
-                    name: NoKeyExample.name,
-                    builder: (context, _) {
-                      return const NoKeyExample();
-                    }),
-              ]),
-        ]);
+            ),
+          ],
+          builder: (context, state, child) {
+            return HomeWrapper(
+              child: child,
+            );
+          },
+        ),
+      ],
+    );
   }
 }
 

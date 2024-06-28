@@ -4,6 +4,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:state_change_demo/src/controllers/auth_controller.dart';
 import 'package:state_change_demo/src/dialogs/waiting_dialog.dart';
+import 'package:state_change_demo/src/screens/auth/splash.screen.dart';
 import 'package:state_change_demo/src/screens/home/home.screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,8 +48,18 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
         centerTitle: true,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         title: const Text("Login"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            if (GoRouter.of(context).canPop()) {
+              context.pop();
+            } else {
+              context.go(SplashScreen.route);
+            }
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(

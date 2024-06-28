@@ -5,10 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:state_change_demo/src/controllers/auth_controller.dart';
 import 'package:state_change_demo/src/dialogs/waiting_dialog.dart';
 import 'package:state_change_demo/src/screens/auth/login.screen.dart';
+import 'package:state_change_demo/src/screens/auth/splash.screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String route = "/register";
-  static const String name = "Register Screen";
+  static const String name = "Register";
   const RegisterScreen({super.key});
 
   @override
@@ -20,7 +21,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController email, password, confirmPassword;
   late FocusNode emailFn, passwordFn, confirmPasswordFn;
 
-  bool obfuscate = true;
+  bool obfuscatePassword = true;
+  bool obfuscateConfirmPassword = true;
 
   @override
   void initState() {
@@ -53,6 +55,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         title: const Text("Register"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            if (GoRouter.of(context).canPop()) {
+              context.pop();
+            } else {
+              context.go(SplashScreen.route);
+            }
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -96,17 +108,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Flexible(
                   child: TextFormField(
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: obfuscate,
+                    obscureText: obfuscatePassword,
                     decoration: decoration.copyWith(
                         labelText: "Password",
                         prefixIcon: const Icon(Icons.password),
                         suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                obfuscate = !obfuscate;
+                                obfuscatePassword = !obfuscatePassword;
                               });
                             },
-                            icon: Icon(obfuscate
+                            icon: Icon(obfuscatePassword
                                 ? Icons.remove_red_eye_rounded
                                 : CupertinoIcons.eye_slash))),
                     focusNode: passwordFn,
@@ -134,17 +146,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Flexible(
                   child: TextFormField(
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: obfuscate,
+                    obscureText: obfuscateConfirmPassword,
                     decoration: decoration.copyWith(
                         labelText: "Confirm Password",
                         prefixIcon: const Icon(Icons.password),
                         suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                obfuscate = !obfuscate;
+                                obfuscateConfirmPassword =
+                                    !obfuscateConfirmPassword;
                               });
                             },
-                            icon: Icon(obfuscate
+                            icon: Icon(obfuscateConfirmPassword
                                 ? Icons.remove_red_eye_rounded
                                 : CupertinoIcons.eye_slash))),
                     focusNode: confirmPasswordFn,
