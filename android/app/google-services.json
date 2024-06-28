@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "259162808737",
+    "project_id": "basanal-firebase-auth",
+    "storage_bucket": "basanal-firebase-auth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259162808737:android:68d55071208df5433a6be0",
+        "android_client_info": {
+          "package_name": "com.example.state_change_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP4lzDctx8T6hVtV4UULC0rPO5t3glDIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
